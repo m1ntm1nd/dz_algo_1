@@ -18,7 +18,9 @@ with open('ex1.csv','r') as csv_file:
         ans.append(float(line[4].replace(',','.')))
         ans.append(float(line[5].replace(',','.')))
         data[keyss] = (np.log(ans[0]/ans[1]) + np.log(ans[1]/ans[2]) + np.log(ans[2]/ans[3]) + np.log(ans[3]/ans[4]))/ 4
-    plt.plot(keys,list((data.values())), marker="o", label="d")
+    
+    plt.scatter(keys, list((data.values())), s=7, c='red', marker="o", alpha = 0.5, label='Декремент')  
+    #plt.plot(keys,list((data.values())), marker="o", label="d")
     #     data[0][keyss] = float(line[1].replace(',','.'))
     #     data[1][keyss] = float(line[2].replace(',','.'))
     #     data[2][keyss] = float(line[3].replace(',','.'))
@@ -38,7 +40,7 @@ with open('ex1.csv','r') as csv_file:
     # # y2 = np.divide(200,x2)
     # # plt.plot(np.add(x2,3),y2,label = r"$200/x-4$")
     plt.xlabel('R, Om', fontsize=16)
-    plt.ylabel('d, V', fontsize=16) 
+    plt.ylabel('d ед', fontsize=16) 
     plt.grid(True)
     plt.legend(loc='best', fontsize=12)
     plt.savefig('figure_with_legend.png')
