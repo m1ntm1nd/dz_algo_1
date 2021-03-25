@@ -3,7 +3,7 @@
 #include <math.h>
 using namespace std;
 
-pair<int, int> solve_du(int a1, int b1, int c1, int a2, int b2, int c2) {
+pair<int, int> solve_du(double a1, double b1, double c1, double a2, double b2, double c2) {
 	int den = b2 - b1 * a2;
 	if  (a1 == 0){
 		if ((a2 == 0) || (b1 == 0)){
@@ -37,8 +37,8 @@ pair<int, int> solve_du(int a1, int b1, int c1, int a2, int b2, int c2) {
 		int y = (c1 - x*a1)/a2;
 		return make_pair(x,y);
 	}    
-	int y = (c2 * a1 - a2 * c1) / (b2 - b1 * a2);
-	int x = (c1 - b1 * y) / a1;
+	double y = (c2 * a1 - a2 * c1) / (b2 - b1 * a2);
+	double x = (c1 - b1 * y) / a1;
 	return make_pair(x, y);
 }
 
@@ -47,7 +47,7 @@ int* resheto(int n) {
 	for (int i = 0; i <= n; i++) {
 		a[i] = i;
 	}
-	cout<<a[n]<<endl;
+	//cout<<a[n]<<endl;
 	for (int i = 2; i < sqrt(n); i++) {
 		int k = i * i;
 		a[k] = 0;
@@ -66,11 +66,17 @@ int gcd(int a, int b) {
 }
 
 int main(){
-	int n = 1000;
-	int* a = resheto(n);
-	for (int i = 2; i < n; i++) {
-		if (a[i] != 0){
-			cout<<a[i]<<'\n';
-		}
-	}
+	// int n = 1000;
+	// int* a = resheto(n);
+	// for (int i = 2; i < n; i++) {
+	// 	if (a[i] != 0){
+	// 		cout<<a[i]<<'\n';
+	// 	}
+	// }
+
+	//cout << gcd(225, 675);
+
+
+	pair<double, double> ans = solve_du(1,1,1,2,2,2);
+	cout << ans.first<<' '<<ans.second;
 }
