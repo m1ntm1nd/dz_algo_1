@@ -1,18 +1,30 @@
-#!/usr/bin/env python3
+def fib(n):
+    f = []
+    f.append(1)
+    f.append(1)
+    for x in range(2,n):
+        f.append(f[x-1] + f[x-2])
+    return f[n-1]
 
-import socket
+def three_ones(n):
+    dp = [0,0,0,1]
+    s = 1
+    if n==1:
+        return 2
+    elif n==2:
+        return 4
+    for i in range(4,n+1):
+        dp.append(dp[i-1]*2)
+        s+=dp[i-1]*2
+    return 2**n - dp[n] - dp[n-1]
 
-HOST = '127.0.0.1'  # Standard loopback interface address (localhost)
-PORT = 65432        # Port to listen on (non-privileged ports are > 1023)
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.bind((HOST, PORT))
-    s.listen()
-    conn, addr = s.accept()
-    with conn:
-        print('Connected by', addr)
-        while True:
-            data = conn.recv(1024)
-            if not data:
-                break
-            conn.sendall(data)
+def main():
+    N = int(input())
+    #a = list(map(int, input().split()))
+    print(three_ones(N))
+    #print(three_ones(5))
+
+
+if __name__ == '__main__':
+    main()
