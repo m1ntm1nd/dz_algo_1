@@ -69,3 +69,16 @@ yn=[polynom5(ans,i) for i in xn]
 plt.plot(xn,yn)
 plt.grid(True)
 plt.show()
+
+
+
+
+# import numpy as np
+
+# def f():
+#     return np.random.rand(1,3)
+# N = 100
+# for i in range(100):
+#     row = f()
+#     A = np.vstack([A, row])
+# A
