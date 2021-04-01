@@ -1,77 +1,80 @@
 import numpy as np
+n = 100
+def DivideRow(A, B, row, divider):
+    if divider != 0:
+        A[row,] /= divider
+        B[row,0] /= divider
+        #A[row] = [a / divider for a in A[row]]
+    #print("\n",A)
+        
+def SwapRows(A, B, row1, row2):
+    A[[row1,row2]] = A[[row2,row1]]
+    B[[row1,0]] = B[[row2,0]]
+    #print("\n",A)
+    
+def CombineRows(A, B, row, destination_row, weight):
+    for i in range(n):
+        A[destination_row,i] += weight*A[row,i]
+    B[destination_row,0] += weight*B[row,0]
+    #print("\n",A)
 
-def GENP(A, b):
-    '''
-    Gaussian elimination with no pivoting.
-    % input: A is an n x n nonsingular matrix
-    %        b is an n x 1 vector
-    % output: x is the solution of Ax=b.
-    % post-condition: A and b have been modified. 
-    '''
-    n =  len(A)
-    if b.size != n:
-        raise ValueError("Invalid argument: incompatible sizes between A & b.", b.size, n)
-    for pivot_row in xrange(n-1):
-        for row in xrange(pivot_row+1, n):
-            multiplier = A[row][pivot_row]/A[pivot_row][pivot_row]
-            #the only one in this column since the rest are zero
-            A[row][pivot_row] = multiplier
-            for col in xrange(pivot_row + 1, n):
-                A[row][col] = A[row][col] - multiplier*A[pivot_row][col]
-            #Equation solution column
-            b[row] = b[row] - multiplier*b[pivot_row]
-    print A
-    print b
-    x = np.zeros(n)
-    k = n-1
-    x[k] = b[k]/A[k,k]
-    while k >= 0:
-        x[k] = (b[k] - np.dot(A[k,k+1:],x[k+1:]))/A[k,k]
-        k = k-1
-    return x
+def matrix_to_triangle_view(A,B):
+    for i in range(n):
+        maximum = A[i,i]
+        maxstr = i
+        for j in range(i+1,n):
+            if maximum < A[j,i]: 
+                maxstr = j
+        if maxstr != i:
+            SwapRows(A,B,i,maxstr)
+        DivideRow(A,B,maxstr,A[maxstr][i])
+        for j in range(i+1,n):
+            if A[j][i] != 0:
+                DivideRow(A,B,j,A[j][i])
+                CombineRows(A,B,maxstr,j,-1)
+        
+def matrix_reversed_solving(A,B):
+    ANS = [B[n-1,0]/A[n-1,n-1]]
+    cnt = 0
+    #print(B[n-1,0],A[n-1,n-1],ANS)
+    for i in range(n-2,-1,-1):
+        partial_sum = 0
+        t = 0
+        for j in range(n-1,n-(len(ANS)+1),-1):
+            partial_sum += A[i][j] * ANS[t]
+            t += 1
+        b1 = B[i,0]
+        delim = A[i][j-1]
+        ANS.append((B[i,0]-partial_sum)/A[i][j-1])
+        cnt += 1
+    #lost = (B[0,0]-partial_sum-ANS[len(ANS)-1]*A[0,1])/A[0][0]  #баг - непонятно, почему теряется одно значение
+    #ANS.append(lost)
+    return np.flipud(np.array(ANS))
 
-def GEPP(A, b):
-    '''
-    Gaussian elimination with partial pivoting.
-    % input: A is an n x n nonsingular matrix
-    %        b is an n x 1 vector
-    % output: x is the solution of Ax=b.
-    % post-condition: A and b have been modified. 
-    '''
-    n =  len(A)
-    if b.size != n:
-        raise ValueError("Invalid argument: incompatible sizes between A & b.", b.size, n)
-    # k represents the current pivot row. Since GE traverses the matrix in the upper 
-    # right triangle, we also use k for indicating the k-th diagonal column index.
-    for k in xrange(n-1):
-        #Choose largest pivot element below (and including) k
-        maxindex = abs(A[k:,k]).argmax() + k
-        if A[maxindex, k] == 0:
-            raise ValueError("Matrix is singular.")
-        #Swap rows
-        if maxindex != k:
-            A[[k,maxindex]] = A[[maxindex, k]]
-            b[[k,maxindex]] = b[[maxindex, k]]
-        for row in xrange(k+1, n):
-            multiplier = A[row][k]/A[k][k]
-            #the only one in this column since the rest are zero
-            A[row][k] = multiplier
-            for col in xrange(k + 1, n):
-                A[row][col] = A[row][col] - multiplier*A[k][col]
-            #Equation solution column
-            b[row] = b[row] - multiplier*b[k]
+
+def Gaussian_method(A,B):
+    matrix_to_triangle_view(A,B)
+    return matrix_reversed_solving(A,B)
+
+def main():
+    A = np.zeros((n-1,n),dtype=np.float)
+    for i in range(1,n-1):
+        A[i][i-1] = 1
+        A[i][i] = 10
+        A[i][i+1] = 1
+    A[0][0] = 10
+    A[0][1] = 1
+    A = np.vstack((A,np.ones(n)))
+    #print(A.shape)
+    f = np.zeros((n,1))
+    for i in range(n):
+        f[i][0] = i+1
+    matrix_to_triangle_view(A,f)
     print(A)
-    print (b)
-    x = np.zeros(n)
-    k = n-1
-    x[k] = b[k]/A[k,k]
-    while k >= 0:
-        x[k] = (b[k] - np.dot(A[k,k+1:],x[k+1:]))/A[k,k]
-        k = k-1
-    return x
+    print(np.linalg.solve(A,f).reshape(1,n))
+    print(Gaussian_method(A,f))
 
 if __name__ == "__main__":
-    A = np.array([[1.,-1.,1.,-1.],[1.,0.,0.,0.],[1.,1.,1.,1.],[1.,2.,4.,8.]])
-    b =  np.array([[14.],[4.],[2.],[2.]])
-    print(GENP(np.copy(A), np.copy(b)))
-    print(GEPP(A,b))
+    main()
+
+
