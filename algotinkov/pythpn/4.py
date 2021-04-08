@@ -23,13 +23,24 @@ def main():
             dp0 = dp[i-1][j]
             dp[i][j] = max(dp[i-1][j], dp1)
             if dp0 > dp1:
-                dw[i][j] = i-1
+                dw[i][j] = 0
             else:
-                dw[i][j] = i
+                dw[i][j] = 1
     #print(dp[N][W])
-    print(max(dp[N]))     
+    maxN = dp[N][0]
+    it = 0     
+    for i in range(W,-1,-1):
+        a =  dp[N][i]
+        if dp[N][i] > maxN:
+            it = i
+            maxN = dp[N][i]
+    ans = []
+    for i in range(N, -1, -1):
+        if dw[i][it] == 1:
+            ans.append(i)
+    print(len(ans))
+    for x in ans:
+        print(x, end=' ')
 
-    
-        
 if __name__ == '__main__':
-    main()
+    main() 
