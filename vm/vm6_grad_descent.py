@@ -1,10 +1,10 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
-import sys
+
 from scipy import interpolate
 from scipy.optimize import minimize, rosen
-
+import sys
 sys.setrecursionlimit(10**6)
 
 def f(x1 = -1.21682,x2 = 0.83666,x3=-1.21682):

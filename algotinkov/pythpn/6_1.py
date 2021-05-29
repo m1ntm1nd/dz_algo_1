@@ -31,8 +31,8 @@ def main():
     ans = []
     for i in range(len(s)-len(t)+1):
         j = i + len(t)
-        bighash = (hshed[j] - hshed[i]) % M
-        if (bighash == (smallhash % M * ppower[i])%M):
+        bighash = (hshed[j] - hshed[i]* ppower[i]) % M  % M
+        if (bighash == (smallhash* ppower[i]%M)):
             ans.append(i)
     print_list(ans)
 
